@@ -36,7 +36,20 @@ afterAll(() => {
 })
 
 describe('ResourcesModal', () => {
-    it('it should instantiate ', () => {
-    expect(1).toBe(1)
+
+    it('toont de juiste titel met naam en level', () => {
+        const buildingData = require("./mockData/building.json");
+        const h1 = resourceModalWrapper.find('.resourceContainer h1');
+        expect(h1.exists()).toBe(true);
+        expect(h1.text()).toContain(`${buildingData.name} - Lv ${buildingData.level}`);
     });
+
+    it('should show correct resource titles', () => {
+        expect(resourceModalWrapper.find('.resourceTitleContainer').find('h1').text()).toBe('Mine - Lv 1');
+    });
+
+    it('Should show recourses per ouw', () => {
+        expect(resourceModalWrapper.find('.resourceTitleContainer').find('h2').text()).toBe('80 Stone / Hour');
+    });
+
 });
