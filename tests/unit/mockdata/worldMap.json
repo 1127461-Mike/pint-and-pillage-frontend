@@ -1,0 +1,14 @@
+{
+    "worldTiles": [
+        [
+            {"tileType": "Water"}, {"tileType": "Water"}, {"tileType": "Water"}
+        ],
+        [
+            {"tileType": "Water"}, {"tileType": "Grass"}, {"tileType": "Water"}
+        ],
+        [
+            {"tileType": "Water"}, {"tileType": "Water"}, {"tileType": "Water"}
+        ]
+    ],
+    "villages": []
+} 
