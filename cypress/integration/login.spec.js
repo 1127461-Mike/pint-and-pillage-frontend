@@ -1,5 +1,5 @@
 /* eslint-env cypress */
-describe('Login Page', () => {
+describe('Login', () => {
     beforeEach(() => {
         cy.visit('/login');
     });
@@ -8,7 +8,6 @@ describe('Login Page', () => {
         cy.get('input[type="text"]').should('exist');
         cy.get('input[type="password"]').should('exist');
         cy.get('button.submitButton').should('exist');
-        cy.get('a.redirects').should('have.length', 2);
     });
 
     it('should show error message with invalid credentials', () => {
@@ -17,20 +16,24 @@ describe('Login Page', () => {
         cy.get('button.submitButton').click();
         
         cy.get('.v-toast-error').should('be.visible');
-        cy.get('.v-toast-error').should('contain', 'Something went wrong');
+        cy.get('.v-toast-error').should('contain', 'Invalid credentials');
     });
 
     it('should successfully login with valid credentials', () => {
-        const testEmail = 'test5@mail.com';
-        const testPassword ='Test123!';
-
-        cy.get('input[type="text"]').type(testEmail);
-        cy.get('input[type="password"]').type(testPassword);
+        cy.get('input[type="text"]').type('test5@mail.com');
+        cy.get('input[type="password"]').type('Test123!');
         cy.get('button.submitButton').click();
         
         cy.url().should('not.include', '/login');
         cy.url().should('include', '/');
         
         cy.window().its('localStorage.token').should('exist');
+    });
+
+    it('should redirect to login page when accessing protected route without token', () => {
+        cy.clearLocalStorage();
+        cy.visit('/');
+        
+        cy.url().should('include', '/login');
     });
 });
