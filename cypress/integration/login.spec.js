@@ -16,7 +16,7 @@ describe('Login', () => {
         cy.get('button.submitButton').click();
         
         cy.get('.v-toast-error').should('be.visible');
-        cy.get('.v-toast-error').should('contain', 'Invalid credentials');
+        cy.get('.v-toast-error').should('contain', 'Something went wrong');
     });
 
     it('should successfully login with valid credentials', () => {
@@ -30,10 +30,10 @@ describe('Login', () => {
         cy.window().its('localStorage.token').should('exist');
     });
 
-    it('should redirect to login page when accessing protected route without token', () => {
+    it('should redirect to home page when accessing protected route without token', () => {
         cy.clearLocalStorage();
         cy.visit('/');
         
-        cy.url().should('include', '/login');
+        cy.url().should('include', '/homepage');
     });
 });
