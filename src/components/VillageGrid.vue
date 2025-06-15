@@ -16,6 +16,7 @@
 <script>
     import decorativeTiles from '../jsons/DecorativeTiles'
     import wallTiles from '../jsons/WallTiles'
+    import { isTileClickable, calculateZoomLevel, hasWallBuilding } from '../utils/gridUtils'
 
     export default {
         data: function () {
@@ -60,11 +61,8 @@
                 this.checkIfWallShouldBeShown(village);
             },
             checkIfWallShouldBeShown: function (village){
-                for (let i = 0; i < village.buildings.length; i++){
-                    if (village.buildings[i].name === 'Wall' && village.buildings[i].level > 0){
-                        this.showWall();
-                        break;
-                    }
+                if (hasWallBuilding(village.buildings)) {
+                    this.showWall();
                 }
             },
             buildBaseTiles: function (){
@@ -97,20 +95,13 @@
                 }
             },
             showModal: function (currentTile){
-                for (let i = 0; i < this.unclickableTiles.length; i++){
-                    if (currentTile.name === this.unclickableTiles[i]){
-                        return false;
-                    }
+                if (isTileClickable(currentTile.name, this.unclickableTiles)) {
+                    this.$emit('toggleModal', currentTile);
                 }
-                this.$emit('toggleModal', currentTile);
             },
             zoom: function (zoomEvent) {
-                let deltaY = zoomEvent.deltaY;
-                if (deltaY < 0){
-                    this.$store.dispatch('updateZoomState', this.currentZoom + this.zoomPerStep)
-                }else if(deltaY > 0){
-                    this.$store.dispatch('updateZoomState', this.currentZoom - this.zoomPerStep)
-                }
+                const newZoom = calculateZoomLevel(this.currentZoom, zoomEvent.deltaY, this.zoomPerStep);
+                this.$store.dispatch('updateZoomState', newZoom);
             },
         }
     }
