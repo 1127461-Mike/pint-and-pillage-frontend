@@ -1,10 +1,13 @@
 <template>
-    <div :class="gridContainerClass"  v-dragscroll @wheel="zoom($event)" :style="{'transform': 'scale(' + currentZoom + ')'}">
+    <div :class="gridContainerClass" data-testid="village-grid" v-dragscroll @wheel="zoom($event)" :style="{'transform': 'scale(' + currentZoom + ')'}">
         <div class="gridContainer">
-            <div class="grid" v-if="grid" >
+            <div class="grid" data-testid="grid" v-if="grid" >
                 <div v-for="(cellLength, i) in gridLength" :key="cellLength.key" class="row">
                     <div v-for="(cellWidth, j)  in gridWidth" :key="cellWidth.key" class="tile">
-                        <component  v-bind:is="grid[i][j].name" @click.native="showModal(grid[i][j])" :buildingProperties="grid[i][j]" ></component>
+                        <component  v-bind:is="grid[i][j].name" 
+                                   :data-testid="'tile-' + grid[i][j].name"
+                                   @click.native="showModal(grid[i][j])" 
+                                   :buildingProperties="grid[i][j]" ></component>
                     </div>
                 </div>
             </div>
@@ -16,7 +19,6 @@
 <script>
     import decorativeTiles from '../jsons/DecorativeTiles'
     import wallTiles from '../jsons/WallTiles'
-    import { isTileClickable, calculateZoomLevel, hasWallBuilding } from '../utils/gridUtils'
 
     export default {
         data: function () {
@@ -61,8 +63,11 @@
                 this.checkIfWallShouldBeShown(village);
             },
             checkIfWallShouldBeShown: function (village){
-                if (hasWallBuilding(village.buildings)) {
-                    this.showWall();
+                for (let i = 0; i < village.buildings.length; i++){
+                    if (village.buildings[i].name === 'Wall' && village.buildings[i].level > 0){
+                        this.showWall();
+                        break;
+                    }
                 }
             },
             buildBaseTiles: function (){
@@ -95,13 +100,20 @@
                 }
             },
             showModal: function (currentTile){
-                if (isTileClickable(currentTile.name, this.unclickableTiles)) {
-                    this.$emit('toggleModal', currentTile);
+                for (let i = 0; i < this.unclickableTiles.length; i++){
+                    if (currentTile.name === this.unclickableTiles[i]){
+                        return false;
+                    }
                 }
+                this.$emit('toggleModal', currentTile);
             },
             zoom: function (zoomEvent) {
-                const newZoom = calculateZoomLevel(this.currentZoom, zoomEvent.deltaY, this.zoomPerStep);
-                this.$store.dispatch('updateZoomState', newZoom);
+                let deltaY = zoomEvent.deltaY;
+                if (deltaY < 0){
+                    this.$store.dispatch('updateZoomState', this.currentZoom + this.zoomPerStep)
+                }else if(deltaY > 0){
+                    this.$store.dispatch('updateZoomState', this.currentZoom - this.zoomPerStep)
+                }
             },
         }
     }

@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div data-testid="village-selector">
         <div  v-if="selectedVillage" style="position: relative; z-index: 2000;">
-            <div class="villageSelector" @click="isDroppedDown =! isDroppedDown" v-click-outside="closeDropdown"><p>{{selectedVillage.name}}</p></div>
-            <div class="dropdown" v-show="isDroppedDown">
+            <div class="villageSelector" data-testid="village-dropdown-btn" @click="isDroppedDown =! isDroppedDown" v-click-outside="closeDropdown"><p>{{selectedVillage.name}}</p></div>
+            <div class="dropdown" data-testid="village-dropdown" v-show="isDroppedDown">
                 <div v-for="village in villageList" :key="village.key"  >
                     <div @click="updateVillage(village.villageId)" class="dropdownItems">
                         <div v-if="village.villageId !== selectedVillage.villageId"><p>{{village.name}}</p></div>

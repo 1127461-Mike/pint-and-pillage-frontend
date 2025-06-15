@@ -1,12 +1,12 @@
 <template>
-    <div class="login" @keydown.enter="login" v-if="isCompatibleBrowser()">
+    <div class="login" data-testid="login-form" @keydown.enter="login" v-if="isCompatibleBrowser()">
         <div class="loginBox">
             <div class="loginInputBox">
-                <input class="inputField" type="text" v-model.trim="username" placeholder="Username"/>
-                <input class="inputField" type="password" v-model.trim="password" placeholder="Password"/>
+                <input class="inputField" data-testid="username-input" type="text" v-model.trim="username" placeholder="Username"/>
+                <input class="inputField" data-testid="password-input" type="password" v-model.trim="password" placeholder="Password"/>
                 <a class="redirects" @click="updateRoute('ResetPassword')">Reset password</a>
                 <a class="redirects" @click="updateRoute('Register')">Create new account</a>
-                <button class="submitButton" @click="login">Login</button>
+                <button class="submitButton" data-testid="login-button" @click="login">Login</button>
             </div>
         </div>
     </div>
